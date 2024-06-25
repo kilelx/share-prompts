@@ -1,7 +1,10 @@
 import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 
-console.log( {clientId: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET,})
+import User from "@models/user";
+import { connectToDB } from "@utils/database";
+
+// console.log( {clientId: process.env.GOOGLE_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET,})
 
 // We provide the toptions object in NextAuth
 const handler = NextAuth({
@@ -17,6 +20,29 @@ const handler = NextAuth({
     },
     async signIn({ profile }) {
 
+        try {
+            await connectToDB();
+
+            // Check if a user already exists
+            const userExists = await User.findOne({
+                email: profile.email
+            })
+
+            // if not, create a new user
+            if(!userExists) {
+                await User.create({
+                    email: profile.email,
+                    // Formatting the username: delete white spaces
+                    username: profile.name.replace(" ", "").toLowerCase(),
+                    image: profile.picture
+                })
+            }
+    
+            return true;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
     }
 })
 
