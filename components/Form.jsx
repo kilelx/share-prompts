@@ -60,7 +60,8 @@ const Form = ({
             <button
               type="submit"
               // IF it's submitting, disable the btn
-              disabled={submitting}  
+              disabled={submitting}
+              className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
             >
               {submitting ? `${type}...` : type}
             </button>

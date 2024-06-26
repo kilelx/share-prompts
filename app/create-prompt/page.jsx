@@ -14,14 +14,25 @@ const CreatePrompt = () => {
     tag: ''
   })
 
+  const createPrompt = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const response = await fetch('/api/prompt/new')
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <Form
       type="Create"
       post={post}
       setPost={setPost}
       submitting={submitting}
-      handleSubmit={CreatePrompt}
-      />
+      handleSubmit={createPrompt}
+    />
   )
 }
 
